@@ -20,15 +20,21 @@ object Dependencies {
 
   object V {
     val scalding  = "0.9.1"
-    val hadoop    = "1.1.2"
+    val hadoop    = "1.2.1"
     val specs2    = "2.3.11"
+    val avroSchemas = "0.0.34"
     // Add versions for your additional libraries here...
   }
 
   object Libraries {
     val scaldingCore = "com.twitter"                %%  "scalding-core"       % V.scalding
-    val hadoopCore   = "org.apache.hadoop"          %   "hadoop-core"         % V.hadoop       % "provided"
+    val scaldingAvro = "com.twitter"                %%  "scalding-avro"       % V.scalding
+
+    val hadoopCore   = "org.apache.hadoop"          %   "hadoop-core"         % V.hadoop   //   % "provided"
+
+
     // Add additional libraries from mvnrepository.com (SBT syntax) here...
+    var avroSchemas = "com.relateiq.schemas"        % "avro-schemas"         % V.avroSchemas
 
     // Scala (test only)
     val specs2       = "org.specs2"                 %% "specs2"               % V.specs2       % "test"

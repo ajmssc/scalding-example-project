@@ -17,12 +17,13 @@ object BuildSettings {
 
   // Basic settings for our app
   lazy val basicSettings = Seq[Setting[_]](
-    organization  := "com.snowplowanalytcs",
-    version       := "0.0.5",
-    description   := "The Scalding WordCountJob example as a standalone SBT project, ready for Amazon EMR",
+    organization  := "com.relateiq",
+    version       := "0.0.1",
+    description   := "Scalding sample job",
     scalaVersion  := "2.10.4",
     scalacOptions := Seq("-deprecation", "-encoding", "utf8"),
-    resolvers     ++= Dependencies.resolutionRepos
+    resolvers     ++= Dependencies.resolutionRepos ,
+    credentials   += Credentials(Path.userHome / ".sbt" / ".credentials")
   )
 
   // sbt-assembly settings for building a fat jar
@@ -42,15 +43,17 @@ object BuildSettings {
         "minlog-1.2.jar", // Otherwise causes conflicts with Kyro (which bundles it)
         "janino-2.5.16.jar", // Janino includes a broken signature, and is not needed anyway
         "commons-beanutils-core-1.8.0.jar", // Clash with each other and with commons-collections
-        "commons-beanutils-1.7.0.jar",      // "
-        "hadoop-core-1.1.2.jar", // Provided by Amazon EMR. Delete this line if you're not on EMR
-        "hadoop-tools-1.1.2.jar" // "
+        "commons-beanutils-1.7.0.jar"//,      // "
+        //"hadoop-core-1.1.2.jar", // Provided by Amazon EMR. Delete this line if you're not on EMR
+        //"hadoop-tools-1.1.2.jar" // "
       ) 
       cp filter { jar => excludes(jar.data.getName) }
     },
     
     mergeStrategy in assembly <<= (mergeStrategy in assembly) {
       (old) => {
+        case PathList("javax", "xml", xs @ _*) => MergeStrategy.first
+        case PathList("org", "objectweb", xs @ _*) => MergeStrategy.first
         case "project.clj" => MergeStrategy.discard // Leiningen build files
         case x => old(x)
       }
